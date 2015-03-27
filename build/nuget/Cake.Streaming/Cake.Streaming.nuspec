@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Cake.Streaming</id>
+    <version>0.0.1</version>
+    <authors>Richard Simpson</authors>
+    <owners>Richard Simpson</owners>
+    <projectUrl>https://github.com/RichiCoder1/Cake.Streaming</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Cake Streaming Addin</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Cake; Cake Build; Streaming</tags>
+    <dependencies></dependencies>
+  </metadata>
+</package>
