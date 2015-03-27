@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Streaming", "Cake.Streaming\Cake.Streaming.csproj", "{08F7633A-66FB-465C-AEC3-8DC01D448480}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Streaming.UnitTests", "Cake.Streaming.UnitTests\Cake.Streaming.UnitTests.csproj", "{8E41FAC9-C680-40E0-9380-D68350715660}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83261BE9-136A-426C-AC7D-695240687C61}"
+	ProjectSection(SolutionItems) = preProject
+		..\build.cake = ..\build.cake
+		..\build.ps1 = ..\build.ps1
+		..\build\nuget\Cake.Streaming\Cake.Streaming.nuspec = ..\build\nuget\Cake.Streaming\Cake.Streaming.nuspec
+		..\build\Utilities.cake = ..\build\Utilities.cake
+		..\build\XmlHelpers.cake = ..\build\XmlHelpers.cake
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5C6F0830-8798-4AE6-B3E8-E8881A3F68EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Streaming.Core", "Cake.Streaming.Core\Cake.Streaming.Core.csproj", "{AEAF1983-310A-4779-B204-D67FD0594D24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08F7633A-66FB-465C-AEC3-8DC01D448480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08F7633A-66FB-465C-AEC3-8DC01D448480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08F7633A-66FB-465C-AEC3-8DC01D448480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08F7633A-66FB-465C-AEC3-8DC01D448480}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E41FAC9-C680-40E0-9380-D68350715660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E41FAC9-C680-40E0-9380-D68350715660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E41FAC9-C680-40E0-9380-D68350715660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E41FAC9-C680-40E0-9380-D68350715660}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEAF1983-310A-4779-B204-D67FD0594D24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEAF1983-310A-4779-B204-D67FD0594D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEAF1983-310A-4779-B204-D67FD0594D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEAF1983-310A-4779-B204-D67FD0594D24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8E41FAC9-C680-40E0-9380-D68350715660} = {5C6F0830-8798-4AE6-B3E8-E8881A3F68EB}
+	EndGlobalSection
+EndGlobal
