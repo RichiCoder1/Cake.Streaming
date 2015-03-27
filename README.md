@@ -42,6 +42,8 @@ Task("A")
 });
 ```
 
+If you want to create a Cake Addin using streaming, simply reference `Cake.Streaming.Core`. Both `PipeFile` and `ICakePipe` live in this assembly.
+
 Note: Pipe methods make also be asynchronous.
 
 # What's a PipeFile?
