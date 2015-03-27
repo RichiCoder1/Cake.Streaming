@@ -36,11 +36,14 @@ var testResultsDir = JoinPath(buildDir, "testResults");
 var nugetResultDir = JoinPath(buildResultsDir, "packages");
 
 // MSBuild Results Dirs
-var binDir = JoinPath(srcDir, "FPS.Streaming/bin", configuration);
+var binDir = JoinPath(srcDir, "Cake.Streaming/bin", configuration);
+var coreBinDir = JoinPath(srcDir, "Cake.Streaming.Core/bin", configuration);
 
 // Project Specific Result Dirs
-var pkgeDir = JoinPath(nugetSpecDir, "FPS.Streaming");
+var pkgeDir = JoinPath(nugetSpecDir, "Cake.Streaming");
 var pkgeLibDir = JoinPath(pkgeDir, "bin/lib/net45");
+var corePkgeDir = JoinPath(nugetSpecDir, "Cake.Streaming.Core");
+var corePkgeLibDir = JoinPath(corePkgeDir, "bin/lib/net45");
 
 var projectSln = JoinPath(srcDir, projectName + ".sln");
 
@@ -123,10 +126,15 @@ Task("Copy-Files")
 {
     // Cake.Streaming	
     CreateDirectory(pkgeLibDir);    
-    CopyFileToDirectory(JoinPath(binDir, "/Cake.Streaming.dll"), pkgeLibDir);
-    CopyFileToDirectory(JoinPath(binDir, "/Cake.Streaming.pdb"), pkgeLibDir);
-    CopyFileToDirectory(JoinPath(binDir, "/Cake.Core.dll"), pkgeLibDir);
-    CopyFileToDirectory(JoinPath(binDir, "/Cake.Core.xml"), pkgeLibDir);
+    CopyFileToDirectory(JoinPath(binDir, "Cake.Streaming.dll"), pkgeLibDir);
+    CopyFileToDirectory(JoinPath(binDir, "Cake.Streaming.pdb"), pkgeLibDir);
+    CopyFileToDirectory(JoinPath(binDir, "Cake.Core.dll"), pkgeLibDir);
+    CopyFileToDirectory(JoinPath(binDir, "Cake.Core.xml"), pkgeLibDir);
+
+    // Cake.Streaming.Core	
+    CreateDirectory(corePkgeLibDir);    
+    CopyFileToDirectory(JoinPath(coreBinDir, "Cake.Streaming.Core.dll"), corePkgeLibDir);
+    CopyFileToDirectory(JoinPath(coreBinDir, "Cake.Streaming.Core.pdb"), corePkgeLibDir);
 });
 
 Task("Create-NuGet-Package")
@@ -138,6 +146,14 @@ Task("Create-NuGet-Package")
     NuGetPack(JoinPath(pkgeDir, "Cake.Streaming.nuspec"), new NuGetPackSettings {
         Version = packageVersion,
         BasePath = JoinPath(pkgeDir, "bin"),
+        OutputDirectory = nugetResultDir,        
+        Symbols = true
+    });
+
+    // Cake.Streaming.Core
+    NuGetPack(JoinPath(corePkgeDir, "Cake.Streaming.Core.nuspec"), new NuGetPackSettings {
+        Version = packageVersion,
+        BasePath = JoinPath(corePkgeDir, "bin"),
         OutputDirectory = nugetResultDir,        
         Symbols = true
     });

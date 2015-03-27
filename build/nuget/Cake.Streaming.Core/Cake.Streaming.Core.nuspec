@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Cake.Streaming</id>
+    <id>Cake.Streaming.Core</id>
     <version>0.0.1</version>
     <authors>Richard Simpson</authors>
     <owners>Richard Simpson</owners>
     <projectUrl>https://github.com/RichiCoder1/Cake.Streaming</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Cake Streaming Addin</description>
+    <description>Cake Streaming Addin Core. Exposes objects and interfaces necessary to build Cake.Streaming Addins.</description>
     <releaseNotes>Initial Release</releaseNotes>
     <copyright>Copyright 2015</copyright>
-    <tags>Cake; Cake Build; Streaming</tags>
+    <tags>Cake; Cake Build; Streaming; Streaming Core</tags>
+    <dependencies>
+      <dependency id="Cake.Core" version="0.2.1" />
+    </dependencies>
   </metadata>
 </package>

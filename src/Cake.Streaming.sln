@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83261BE9
 	ProjectSection(SolutionItems) = preProject
 		..\build.cake = ..\build.cake
 		..\build.ps1 = ..\build.ps1
+		..\build\nuget\Cake.Streaming.Core\Cake.Streaming.Core.nuspec = ..\build\nuget\Cake.Streaming.Core\Cake.Streaming.Core.nuspec
 		..\build\nuget\Cake.Streaming\Cake.Streaming.nuspec = ..\build\nuget\Cake.Streaming\Cake.Streaming.nuspec
 		..\build\Utilities.cake = ..\build\Utilities.cake
 		..\build\XmlHelpers.cake = ..\build\XmlHelpers.cake
