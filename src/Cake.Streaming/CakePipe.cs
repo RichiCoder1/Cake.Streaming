@@ -12,9 +12,9 @@ namespace Cake.Streaming
     {
         private List<PipeFile> _files;
 
-        internal CakePipe(IEnumerable<FilePath> files)
+        internal CakePipe(IEnumerable<FilePath> files, bool buffer = false)
         {
-            _files = files.Select(filePath => new PipeFile(filePath)).ToList();
+            _files = files.Select(filePath => new PipeFile(filePath, buffer: buffer)).ToList();
         }
 
         public void Pipe(Action<PipeFile> processor)

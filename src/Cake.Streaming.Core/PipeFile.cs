@@ -10,10 +10,42 @@ namespace Cake.Streaming.Core
         private Stream _backingStream;
         private FilePath _endFilePath;
 
-        public PipeFile(FilePath filePath, Stream stream = null)
+        public PipeFile(FilePath filePath, Stream stream = null, bool buffer = false)
         {
             FilePath = _endFilePath = filePath;
-            _backingStream = stream ?? File.Open(filePath.FullPath, FileMode.Open, FileAccess.ReadWrite);
+            if (stream == null)
+            {
+                if (buffer)
+                {
+                    using (var fileStream = File.Open(filePath.FullPath, FileMode.Open, FileAccess.Read))
+                    {
+                        var memoryStream = new MemoryStream();
+                        fileStream.CopyTo(memoryStream);
+                        _backingStream = memoryStream;
+                    }
+
+                }
+                else
+                {
+                    var fileStream = File.Open(filePath.FullPath, FileMode.Open, FileAccess.ReadWrite);
+                    _backingStream = fileStream;
+                }
+            }
+            else
+            {
+                if (!(stream is MemoryStream))
+                {
+                    var memoryStream = new MemoryStream();
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.CopyTo(memoryStream);
+                    _backingStream = memoryStream;
+                    stream.Dispose();
+                }
+                else
+                {
+                    _backingStream = stream;
+                }
+            }
         }
 
         public PipeFile(string fileName, MemoryStream stream)
@@ -66,8 +98,13 @@ namespace Cake.Streaming.Core
             }
         }
 
+        public PipeFile ToBuffer()
+        {
+            return IsMemoryStream ? this : new PipeFile(FilePath, _backingStream, true);
+        }
+
         /// <summary>
-        /// Converts a 
+        /// Creates a new PipeFile with passed stream as a buffer, retaining this PipeFile's file metadata.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
@@ -75,7 +112,7 @@ namespace Cake.Streaming.Core
         {
             if (stream is FileStream)
             {
-                var memoryStream = new MemoryStream(new byte[stream.Length]);
+                var memoryStream = new MemoryStream();
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(memoryStream);
                 return new PipeFile(_endFilePath, memoryStream);

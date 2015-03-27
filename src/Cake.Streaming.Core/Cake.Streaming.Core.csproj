@@ -43,6 +43,7 @@
     </Compile>
     <Compile Include="ICakePipe.cs" />
     <Compile Include="PipeFile.cs" />
+    <Compile Include="PipeFileExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
