@@ -2,7 +2,8 @@ Param(
     [string]$Script = "build.cake",
     [string]$Target = "Default",
     [string]$Configuration = "Release",
-    [string]$Verbosity = "Verbose"
+    [string]$Verbosity = "Verbose",
+    [string]$Tag = "local"
 )
 
 $ScriptDir = Split-Path $PSCommandPath -Parent
@@ -31,5 +32,5 @@ if (!(Test-Path $CAKE_EXE)) {
 }
 
 # Start Cake
-Invoke-Expression "$CAKE_EXE `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`""
+Invoke-Expression "$CAKE_EXE `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`" -tag=`"$Tag`""
 exit $LASTEXITCODE

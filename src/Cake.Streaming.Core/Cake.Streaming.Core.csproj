@@ -42,6 +42,8 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="AsyncHelper.cs" />
+    <Compile Include="CakePipeExtensions.cs" />
     <Compile Include="ICakePipe.cs" />
     <Compile Include="PipeFile.cs" />
     <Compile Include="PipeFileExtensions.cs" />
