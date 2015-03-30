@@ -135,11 +135,6 @@ namespace Cake.Streaming.Core
             get { return EndFilePath.GetExtension(); }
         }
 
-        public DirectoryPath BaseDirectory
-        {
-            get { return _baseDirectory; }
-        }
-
         public string FilePath
         {
             get { return EndFilePath.FullPath; }
@@ -155,9 +150,14 @@ namespace Cake.Streaming.Core
             }
         }
 
-        internal string RelativeFilePath
+        public string RelativeFilePath
         {
             get { return GetRelativePath(EndFilePath.FullPath, _baseDirectory.FullPath); }
+        }
+
+        public DirectoryPath BaseDirectory
+        {
+            get { return _baseDirectory; }
         }
 
         internal void SetBaseDirectory(DirectoryPath path)
