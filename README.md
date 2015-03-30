@@ -20,9 +20,9 @@ Example:
 public static Func<PipeFile, PipeFile> AppendText(string text)
 {
     return file => {
-        var reader = file.ToReader();
+        var reader = file.Contents.ToReader();
         var memoryStream = new MemoryStream();
-        var writer = new StreamWriter(memoryStream, new UTF8Encoding(true, false), 1024, false);
+        var writer = memoryStream.ToWriter();
         writer.Write(text);
         writer.Write(reader.ReadToEnd());
         file.Contents = memoryStream;
