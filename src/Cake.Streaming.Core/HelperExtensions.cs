@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Cake.Streaming.Core
 {
-    public static class PipeFileExtensions
+    public static class HelperExtensions
     {
         public static StreamReader ToReader(this PipeFile pipeFile, Encoding enc = null)
         {
