@@ -130,6 +130,11 @@ namespace Cake.Streaming.Core
             get { return EndFilePath.GetFilename().FullPath; }
         }
 
+        public string Extension
+        {
+            get { return EndFilePath.GetExtension(); }
+        }
+
         public DirectoryPath BaseDirectory
         {
             get { return _baseDirectory; }
