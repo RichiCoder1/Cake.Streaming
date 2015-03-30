@@ -8,7 +8,7 @@ using Cake.Streaming.Core;
 
 namespace Cake.Streaming
 {
-    public sealed class CakePipe : ICakePipe
+    public sealed class CakePipe : ICakePipe, IDisposable
     {
         private List<PipeFile> _files;
 
@@ -23,14 +23,26 @@ namespace Cake.Streaming
             {
                 processor(pipeFile);
             }
+            Dispose();
         }
 
 
-        public void Pipe(Func<PipeFile, Task> processor)
+        public Task PipeAsync(Func<PipeFile, Task> processor)
         {
-            AsyncHelper.RunSync(() => Task.WhenAll(_files.Select(processor)));
+            return Task.WhenAll(_files.Select(processor)).ContinueWith(t => Dispose());
+        }
+        
+
+        public void PipeAll(Action<IReadOnlyList<PipeFile>> processor)
+        {
+            processor(_files);
+            Dispose();
         }
 
+        public Task PipeAllAsync(Func<IReadOnlyList<PipeFile>, Task> processor)
+        {
+            return processor(_files).ContinueWith(t => Dispose());
+        }
 
         public ICakePipe Pipe(Func<PipeFile, PipeFile> processor)
         {
@@ -44,9 +56,21 @@ namespace Cake.Streaming
             return this;
         }
 
-        public ICakePipe Pipe(Func<PipeFile, Task<PipeFile>> processor)
+        public async Task<ICakePipe> PipeAsync(Func<PipeFile, Task<PipeFile>> processor)
         {
-            var newPipes = AsyncHelper.RunSync(() => Task.WhenAll(_files.Select(processor))).ToList();
+            var newPipes = (await Task.WhenAll(_files.Select(processor)).ConfigureAwait(false)).ToList();
+            var oldPipes = _files.Except(newPipes);
+            foreach (var pipeFile in oldPipes)
+            {
+                pipeFile.Dispose();
+            }
+            _files = newPipes;
+            return this;
+        }
+
+        public async Task<ICakePipe> PipeAllAsync(Func<IReadOnlyList<PipeFile>, Task<IReadOnlyList<PipeFile>>> processor)
+        {
+            var newPipes = (await processor(_files).ConfigureAwait(false)).ToList();
             var oldPipes = _files.Except(newPipes);
             foreach (var pipeFile in oldPipes)
             {
@@ -73,5 +97,37 @@ namespace Cake.Streaming
 
             }
         }
+
+        #region IDisposable
+
+        private bool _disposed;
+
+        ~CakePipe()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    foreach (var file in _files)
+                    {
+                        file.Dispose();
+                    }
+                }
+            }
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }
