@@ -11,10 +11,17 @@ namespace Cake.Streaming
     public sealed class CakePipe : ICakePipe, IDisposable
     {
         private List<PipeFile> _files;
+        private readonly DirectoryPath _workingDirectory;
 
-        internal CakePipe(IEnumerable<FilePath> files, bool buffer = false)
+        internal CakePipe(IEnumerable<FilePath> files, DirectoryPath workingDirectory, bool buffer = false)
         {
-            _files = files.Select(filePath => new PipeFile(filePath, buffer: buffer)).ToList();
+            _files = files.Select(filePath => new PipeFile(filePath, buffer: buffer)).Select(file =>
+            {
+                file.SetBaseDirectory(_workingDirectory);
+                return file;
+            }).ToList();
+
+            _workingDirectory = workingDirectory;
         }
 
         public void Pipe(Action<PipeFile> processor)
@@ -46,7 +53,12 @@ namespace Cake.Streaming
 
         public ICakePipe Pipe(Func<PipeFile, PipeFile> processor)
         {
-            var newPipes = _files.Select(processor).ToList();
+            var newPipes = _files.Select(processor).Select(file =>
+            { 
+                file.SetBaseDirectory(_workingDirectory);
+                return file;
+            }).ToList();
+
             var oldPipes = _files.Except(newPipes);
             foreach (var pipeFile in oldPipes)
             {
@@ -58,7 +70,12 @@ namespace Cake.Streaming
 
         public async Task<ICakePipe> PipeAsync(Func<PipeFile, Task<PipeFile>> processor)
         {
-            var newPipes = (await Task.WhenAll(_files.Select(processor)).ConfigureAwait(false)).ToList();
+            var newPipes = (await Task.WhenAll(_files.Select(processor)).ConfigureAwait(false)).Select(file =>
+            {
+                file.SetBaseDirectory(_workingDirectory);
+                return file;
+            }).ToList();
+
             var oldPipes = _files.Except(newPipes);
             foreach (var pipeFile in oldPipes)
             {
@@ -70,7 +87,12 @@ namespace Cake.Streaming
 
         public async Task<ICakePipe> PipeAllAsync(Func<IReadOnlyList<PipeFile>, Task<IReadOnlyList<PipeFile>>> processor)
         {
-            var newPipes = (await processor(_files).ConfigureAwait(false)).ToList();
+            var newPipes = (await processor(_files).ConfigureAwait(false)).Select(file =>
+            {
+                file.SetBaseDirectory(_workingDirectory);
+                return file;
+            }).ToList();
+
             var oldPipes = _files.Except(newPipes);
             foreach (var pipeFile in oldPipes)
             {
@@ -85,7 +107,7 @@ namespace Cake.Streaming
         {
             foreach (var pipeFile in _files)
             {
-                using (var filestream = File.OpenWrite(directoryPath.GetFilePath(pipeFile.FilePath).FullPath))
+                using (var filestream = File.OpenWrite(directoryPath.CombineWithFilePath(pipeFile.RelativeFilePath).FullPath))
                 {
                     var pipeFileStream = pipeFile.Contents;
 

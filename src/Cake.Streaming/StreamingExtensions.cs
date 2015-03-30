@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Cake.Core;
 using Cake.Core.Annotations;
@@ -29,7 +30,8 @@ namespace Cake.Streaming
             }
 
             var files = context.Globber.GetFiles(globber);
-            return new CakePipe(files, buffer);
+            files = files.Select(file => file.MakeAbsolute(context.Environment.WorkingDirectory));
+            return new CakePipe(files, context.Environment.WorkingDirectory, buffer);
         }
     }
 }

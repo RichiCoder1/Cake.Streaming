@@ -1,18 +1,19 @@
 ﻿using System;
 using System.IO;
 using Cake.Core.IO;
+using Path = System.IO.Path;
 
 namespace Cake.Streaming.Core
 {
     public sealed class PipeFile
     {
-        internal readonly FilePath FilePath;
         private Stream _backingStream;
-        private FilePath _endFilePath;
+        internal FilePath EndFilePath;
+        private DirectoryPath _baseDirectory;
 
         public PipeFile(FilePath filePath, Stream stream = null, bool buffer = false)
         {
-            FilePath = _endFilePath = filePath;
+            EndFilePath = filePath;
             if (stream == null)
             {
                 if (buffer)
@@ -115,24 +116,79 @@ namespace Cake.Streaming.Core
                 var memoryStream = new MemoryStream();
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(memoryStream);
-                return new PipeFile(_endFilePath, memoryStream);
+                return new PipeFile(EndFilePath, memoryStream);
             }
             if (stream is MemoryStream)
             {
-                return new PipeFile(_endFilePath, stream);
+                return new PipeFile(EndFilePath, stream);
             }
             throw new InvalidOperationException("Only File and Memory Streams are supported.");
         }
 
         public string Name
         {
-            get { return _endFilePath.GetFilename().FullPath; }
+            get { return EndFilePath.GetFilename().FullPath; }
         }
 
-        public string Path
+        public DirectoryPath BaseDirectory
         {
-            get { return _endFilePath.FullPath; }
-            set { _endFilePath = value; }
+            get { return _baseDirectory; }
+        }
+
+        public string FilePath
+        {
+            get { return EndFilePath.FullPath; }
+            set
+            {
+                var endFilePath = (FilePath) value;
+                if (_baseDirectory != null && !endFilePath.IsRelative)
+                {
+                    endFilePath = GetRelativePath(endFilePath.FullPath, _baseDirectory.FullPath);
+                    endFilePath = endFilePath.MakeAbsolute(_baseDirectory);
+                }
+                EndFilePath = endFilePath;
+            }
+        }
+
+        internal string RelativeFilePath
+        {
+            get { return GetRelativePath(EndFilePath.FullPath, _baseDirectory.FullPath); }
+        }
+
+        internal void SetBaseDirectory(DirectoryPath path)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            if (path.IsRelative)
+            {
+                throw new ArgumentException("Base Directory path must not be relative.");
+            }
+
+            if (path == _baseDirectory)
+                return;
+
+            _baseDirectory = path;
+            if (!EndFilePath.IsRelative)
+            {
+                FilePath endPath = GetRelativePath(EndFilePath.FullPath, _baseDirectory.FullPath);
+                endPath = endPath.MakeAbsolute(_baseDirectory);
+                EndFilePath = endPath;
+            }
+        }
+
+        private static string GetRelativePath(string filespec, string folder)
+        {
+            var pathUri = new Uri(filespec, UriKind.Absolute);
+            // Folders must end in a slash
+            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                folder += Path.DirectorySeparatorChar;
+            }
+            var folderUri = new Uri(folder);
+            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
         }
 
 
